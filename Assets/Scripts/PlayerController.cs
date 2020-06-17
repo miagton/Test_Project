@@ -5,49 +5,42 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float forceApplied = 100f;
-    [SerializeField] GameObject ball = null;
+    [SerializeField] Transform ball;
+    
 
     Rigidbody rb;
+    LineRenderer lr;
+    Touch _touch;
+    Vector3 dragStartPos;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        lr = GetComponent<LineRenderer>();
     }
 
-    
+    // Update is called once per frame
+
     void Update()
     {
-        ApplyVelocity(); 
-        ContolLookAt();
+
+        transform.LookAt(ball);
+      //  transform.position = GetTouchPosition();
+
     }
 
-    private void ApplyVelocity()
+    Vector3 GetTouchPosition()
     {
-        if (Input.GetMouseButtonDown(0))
+        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+
+        Plane plane = new Plane(Vector3.up, transform.position);
+        float distance = 0; // 
+        if (plane.Raycast(ray, out distance))
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-           
-            RaycastHit raycastHit;
-            if(Physics.Raycast(ray, out raycastHit))
-            {
-                var rigidBody = raycastHit.collider.GetComponent<Rigidbody>();
-                if (rigidBody != null)
-                {
-                    rigidBody.AddForceAtPosition(ray.direction*forceApplied, raycastHit.point, ForceMode.VelocityChange);
-                    Gizmos.DrawLine(transform.position, raycastHit.point);
-                }
-            }
+            Vector3 draggingPos = ray.GetPoint(distance);
+            return draggingPos;
         }
+        else return Vector3.zero;
     }
-
-    private void ContolLookAt()
-    {
-        transform.LookAt(ball.transform);
-    }
-   void ApplyForce()
-    {
-        var ray2 = Physics.Raycast(transform.position, ball.transform.position);
-        RaycastHit raycastHit;
-
-    }
+   
 }

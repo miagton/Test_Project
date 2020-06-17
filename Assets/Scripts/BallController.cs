@@ -7,67 +7,85 @@ public class BallController : MonoBehaviour
 {
     [SerializeField] float forceApplied = 100f;
     [SerializeField] float maxDrag = 5f;
-    
-    
+
+
     Rigidbody rb;
     LineRenderer lr;
-    Touch touch;
+    Touch _touch;
     Vector3 dragStartPos;
-  
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
+        //  Plane plane = new Plane(Vector3.up, transform.position);
     }
 
-    // Update is called once per frame
-   
+    
     void Update()
     {
+       
         if (Input.touchCount > 0)
         {
-            touch = Input.GetTouch(0);
-            if(touch.phase == TouchPhase.Began)
+            _touch = Input.GetTouch(0);
+            if (_touch.phase == TouchPhase.Began)
             {
                 StartDrag();
             }
-            if (touch.phase == TouchPhase.Moved)
+            if (_touch.phase == TouchPhase.Moved)
             {
                 Dragging();
             }
-            if (touch.phase == TouchPhase.Ended)
+            if (_touch.phase == TouchPhase.Ended)
             {
-                StopDrag();
+                DragEnding();
             }
         }
-        
-       
+    }
+    void StartDrag()
+    {
+
+
+            Vector3 dragStartPos = GetRayHitPosition();
+            
+            lr.positionCount = 1;
+            lr.SetPosition(0, dragStartPos);
     }
 
-   void StartDrag()
-    {
-        dragStartPos = Camera.main.ScreenToWorldPoint(touch.position);//Camera.main.ScreenToWorldPoint(touch.position);
-        dragStartPos.y = 2f;
-        lr.positionCount = 1;
-        lr.SetPosition(0, dragStartPos);
-    }
     void Dragging()
     {
-        Vector3 draggingPos= Camera.main.ScreenToWorldPoint(touch.position);
-        //dragStartPos.z/y/x=0;
-        
-        lr.positionCount = 2;
-        lr.SetPosition(1, draggingPos);
+
+            Vector3 draggingPos = GetRayHitPosition();
+          
+                          
+                     
+            lr.positionCount = 2;
+            lr.SetPosition(0, draggingPos);
     }
-    void StopDrag()
+
+    void DragEnding()
     {
         lr.positionCount = 0;
-        Vector3 dragEnd= Camera.main.ScreenToWorldPoint(touch.position);
-        //dragEnd.x=0;
+        Vector3 dragEnd= GetRayHitPosition();
+
         Vector3 force = dragStartPos - dragEnd;//direction
         Vector3 clampedForce = Vector3.ClampMagnitude(force, maxDrag) * forceApplied;
 
         rb.AddForce(clampedForce, ForceMode.Impulse);
+    }
 
+    private Vector3 GetRayHitPosition()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+
+        Plane plane = new Plane(Vector3.up, transform.position);
+        float distance = 0; // 
+        if (plane.Raycast(ray, out distance))
+        {
+            Vector3 hitPoint = ray.GetPoint(distance);
+            hitPoint.y = 0.5f;
+            return hitPoint;
+        }
+        else return Vector3.zero;
     }
 }

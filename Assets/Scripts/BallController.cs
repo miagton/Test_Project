@@ -2,25 +2,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BallController : MonoBehaviour
 {
     [SerializeField] float forceApplied = 100f;
     [SerializeField] float maxDrag = 5f;
-
+    [SerializeField] Sprite arrow;
+    
 
     Rigidbody rb;
     LineRenderer lr;
     Touch _touch;
     Vector3 dragStartPos;
+   // Vector3 startPosition;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
         //  Plane plane = new Plane(Vector3.up, transform.position);
+        //startPosition = transform.position;
+       
+        GameHandler.OnReset += ResetBall;
     }
 
+    
     
     void Update()
     {
@@ -42,9 +49,8 @@ public class BallController : MonoBehaviour
             }
         }
     }
-    void StartDrag()
+    void StartDrag()//proccesing start of the dragging
     {
-
 
             Vector3 dragStartPos = GetRayHitPosition();
             
@@ -52,7 +58,7 @@ public class BallController : MonoBehaviour
             lr.SetPosition(0, dragStartPos);
     }
 
-    void Dragging()
+    void Dragging()//dragging in progress
     {
 
             Vector3 draggingPos = GetRayHitPosition();
@@ -63,7 +69,7 @@ public class BallController : MonoBehaviour
             lr.SetPosition(0, draggingPos);
     }
 
-    void DragEnding()
+    void DragEnding()//dragging finished
     {
         lr.positionCount = 0;
         Vector3 dragEnd= GetRayHitPosition();
@@ -74,12 +80,12 @@ public class BallController : MonoBehaviour
         rb.AddForce(clampedForce, ForceMode.Impulse);
     }
 
-    private Vector3 GetRayHitPosition()
+    private Vector3 GetRayHitPosition()//registering position wich ray has hit
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 
         Plane plane = new Plane(Vector3.up, transform.position);
-        float distance = 0; // 
+        float distance ; // 
         if (plane.Raycast(ray, out distance))
         {
             Vector3 hitPoint = ray.GetPoint(distance);
@@ -87,5 +93,13 @@ public class BallController : MonoBehaviour
             return hitPoint;
         }
         else return Vector3.zero;
+    }
+   public void ResetBall()
+    {
+        Destroy(this.gameObject);
+    }
+    private void OnDestroy()
+    {
+        GameHandler.OnReset -= ResetBall;
     }
 }

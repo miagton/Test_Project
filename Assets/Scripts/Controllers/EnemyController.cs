@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float speed = 10f;
     [Tooltip("AMount of speed added with each LVL")]
     [SerializeField] float speedIncrementor = 5f;
+    [SerializeField] float maxSpeed = 100f;
 
     AudioSource audioSource;
     private void Start()
@@ -59,9 +60,10 @@ public class EnemyController : MonoBehaviour
     //increasing speed with each lvl
     void SpeedIncrease()
     {
-        if (speed <= 50)
+        if (speed <= maxSpeed)
         {
             speed += speedIncrementor;
         }
+        else speed = maxSpeed;
     }
 }

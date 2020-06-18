@@ -56,5 +56,8 @@ public class SceneHandler : MonoBehaviour
         
         GameObject ball = FindObjectOfType<BallController>().gameObject;
         Destroy(ball);
+       
+        GameObject handler = FindObjectOfType<GameHandler>().gameObject;
+        handler.GetComponent<GameHandler>().RespawnTargets();
     }
 }

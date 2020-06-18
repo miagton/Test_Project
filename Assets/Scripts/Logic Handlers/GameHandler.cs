@@ -50,7 +50,7 @@ public class GameHandler : MonoBehaviour
     }
 
     //TODO possible to add random positions and amount of targets to spawn
-    private void RespawnTargets()// spawning prefabs at positions
+    public void RespawnTargets()// spawning prefabs at positions
     {
         foreach (var pos in targetsPositions)
         {
@@ -75,4 +75,6 @@ public class GameHandler : MonoBehaviour
         
         return currentLVL;
     }
+
+    
 }

@@ -64,6 +64,6 @@ public class EnemyController : MonoBehaviour
         {
             speed += speedIncrementor;
         }
-        else speed = maxSpeed;
+        else speed = maxSpeed;  
     }
 }

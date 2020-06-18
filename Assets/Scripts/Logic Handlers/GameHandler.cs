@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class GameHandler : MonoBehaviour
 {
-    [Header("Prefabs and wayponts for game reset")]
-    [SerializeField] GameObject targetPrefab = null;
+    [Header("GameObjects to track")]
     [SerializeField] GameObject ball = null;
-    [SerializeField] Transform[] targetsPositions = null;
+    [SerializeField] GameObject[] targets = null;
+    //[SerializeField] GameObject targetPrefab = null;
+    //[SerializeField] Transform[] targetsPositions = null;
 
     //EVENT triggered when lvl completed
     public static event Action OnReset;
@@ -52,9 +53,9 @@ public class GameHandler : MonoBehaviour
     //TODO possible to add random positions and amount of targets to spawn
     public void RespawnTargets()// spawning prefabs at positions
     {
-        foreach (var pos in targetsPositions)
+        foreach (var obj in targets)
         {
-            Instantiate(targetPrefab, pos.position, Quaternion.identity);
+            obj.SetActive(true);
         }
     }
 

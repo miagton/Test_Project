@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
-using UnityEngine.Events;
+
 using UnityEngine.EventSystems;
 
 public class BallController : MonoBehaviour
@@ -21,13 +19,16 @@ public class BallController : MonoBehaviour
     Touch _touch;
     Vector3 dragStartPos;
 
- 
+    ArrowPointer arrow;
 
     void Awake()
     {
         //grabbing the components references
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
+        arrow = GetComponentInChildren<ArrowPointer>();
+        arrow.gameObject.SetActive(false);
+        
         
        //TODO may not be needed,because ball is destroyed on colliding with target
        // GameHandler.OnReset += ResetBall;// subscribing to Reset Lvl event
@@ -68,8 +69,12 @@ public class BallController : MonoBehaviour
 
             Vector3 dragStartPos = GetRayHitPosition();
             
+            
             lr.positionCount = 1;
             lr.SetPosition(0, dragStartPos);
+
+        arrow.gameObject.SetActive(true);
+        arrow.transform.LookAt(dragStartPos);
     }
 
     void Dragging()//dragging in progress
@@ -81,6 +86,8 @@ public class BallController : MonoBehaviour
                      
             lr.positionCount = 2;
             lr.SetPosition(0, draggingPos);
+
+        arrow.transform.LookAt(draggingPos);
     }
 
     void DragEnding()//dragging finished
@@ -91,6 +98,8 @@ public class BallController : MonoBehaviour
         force = dragStartPos - dragEnd;//direction
         Vector3 clampedForce = Vector3.ClampMagnitude(force, maxDrag) * forceApplied;
 
+        arrow.transform.LookAt(dragEnd);
+        arrow.gameObject.SetActive(false);
         rb.AddForce(clampedForce, ForceMode.Impulse);
         hasLaunched = true;
     }

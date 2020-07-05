@@ -43,8 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a8a8f6131361c4c874e111def10e2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyableObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  ball: {fileID: 0}
+  ball: {fileID: 7088487630396808683, guid: a9637ff323f1b1146b05d6ff0e88eb67, type: 3}
+  targets: []

@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class BallController : MonoBehaviour
 {
+    //[SerializeField] GameObject arrow;
     [Header("Values for force applied and Max drag")]
    
     [SerializeField] float forceApplied = 100f;
@@ -17,25 +18,29 @@ public class BallController : MonoBehaviour
     Rigidbody rb;
     LineRenderer lr;
     Touch _touch;
-    Vector3 dragStartPos;
+    Vector3 dragStartPos, draggingPos, dragEnd;
 
-    ArrowPointer arrow;
+   
 
     void Awake()
     {
         //grabbing the components references
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
-        arrow = GetComponentInChildren<ArrowPointer>();
-        arrow.gameObject.SetActive(false);
-        
-        
-       //TODO may not be needed,because ball is destroyed on colliding with target
-       // GameHandler.OnReset += ResetBall;// subscribing to Reset Lvl event
+        //arrow = FindObjectOfType<Arrow>().gameObject;
+        //arrow.SetActive(false);
+
+
+        //TODO may not be needed,because ball is destroyed on colliding with target
+        // GameHandler.OnReset += ResetBall;// subscribing to Reset Lvl event
     }
 
-    
-    
+    //private void Start()
+    //{
+    //    arrow = GameObject.FindGameObjectWithTag("Arrow");
+    //    arrow.SetActive(false);
+    //}
+
     void Update()
     {
 
@@ -67,41 +72,47 @@ public class BallController : MonoBehaviour
     void StartDrag()//proccesing start of the dragging
     {
 
-            Vector3 dragStartPos = GetRayHitPosition();
-            
-            
-            lr.positionCount = 1;
+             dragStartPos = GetRayHitPosition();
+               
+        //arrow.SetActive(true);
+        //arrow.transform.LookAt(dragStartPos);
+
+        lr.positionCount = 1;
             lr.SetPosition(0, dragStartPos);
 
-        arrow.gameObject.SetActive(true);
-        arrow.transform.LookAt(dragStartPos);
+       
     }
 
     void Dragging()//dragging in progress
     {
 
-            Vector3 draggingPos = GetRayHitPosition();
-          
-                          
-                     
-            lr.positionCount = 2;
+             draggingPos = GetRayHitPosition();
+
+        //arrow.transform.LookAt(draggingPos);
+        //float distance = Vector3.Distance(dragStartPos, draggingPos);
+        //arrow.transform.localScale = new Vector3(distance, distance, 0);
+
+        lr.positionCount = 2;
             lr.SetPosition(0, draggingPos);
 
-        arrow.transform.LookAt(draggingPos);
+       
     }
 
     void DragEnding()//dragging finished
     {
         lr.positionCount = 0;
-        Vector3 dragEnd= GetRayHitPosition();
+         dragEnd= GetRayHitPosition();
 
         force = dragStartPos - dragEnd;//direction
         Vector3 clampedForce = Vector3.ClampMagnitude(force, maxDrag) * forceApplied;
+        
+        //arrow.transform.LookAt(dragEnd);
+        //float distance = Vector3.Distance(draggingPos, dragEnd);
+        //arrow.transform.localScale = new Vector3(distance, distance, 0);
 
-        arrow.transform.LookAt(dragEnd);
-        arrow.gameObject.SetActive(false);
         rb.AddForce(clampedForce, ForceMode.Impulse);
         hasLaunched = true;
+        //arrow.SetActive(false);
     }
 
     private Vector3 GetRayHitPosition()//registering position wich ray has hit

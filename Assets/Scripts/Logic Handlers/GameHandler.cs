@@ -61,8 +61,8 @@ public class GameHandler : MonoBehaviour
 
     private void DetectBall()
     {
-        int num = FindObjectsOfType<BallController>().Length;
-        if (num<1)// checking if there no balls in scene
+       //int num = FindObjectsOfType<BallController>().Length;
+        if (currentBall == null)// checking if there no balls in scene
         {
            // creating new ball on its origin position
             GameObject ballNew= Instantiate(ball, ballOriginPosition, Quaternion.identity);

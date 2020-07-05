@@ -33,7 +33,8 @@ public class EnemyController : MonoBehaviour
 
     private void FindBall()
     {
-       //TODO cause error in console wich not affect gameplay=> on the frame the bass is destroyed but new on doesnt exists
+        //TODO cause error in console wich not affect gameplay=> on the frame the bass is destroyed but new on doesnt exists
+        if (ball != null) return;
         if (ball == null)
         {
             ball = FindObjectOfType<BallController>().transform;
